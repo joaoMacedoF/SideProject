@@ -1,0 +1,46 @@
+package com.project.shared.service.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import com.project.shared.dto.data.RolesDto;
+import com.project.shared.dto.request.CreateOrUpdateRoleRequestDto;
+import com.project.shared.dto.request.GetRolesRequestDto;
+import com.project.shared.dto.response.BaseResponseDto;
+import com.project.shared.enums.ErrorCodeEnum;
+import com.project.shared.repository.RoleRepository;
+import com.project.shared.service.RoleService;
+
+@Service
+public class RoleServiceImpl implements RoleService {
+	
+	@Autowired
+	MessageSource messageSource;
+	
+	@Autowired
+	RoleRepository roleRepository;
+
+	@Override
+	public BaseResponseDto<Page<RolesDto>> getRoles(GetRolesRequestDto request, Pageable pageable) {
+		BaseResponseDto<Page<RolesDto>> response = new BaseResponseDto<>();
+		try {
+			//Page<Role> roleDb = roleRepository
+			response.setError(ErrorCodeEnum.OK.getErrorCode());
+			response.setMessage(messageSource.getMessage("message.ok", null, null));
+		}catch (Exception e) {
+			response.setError(ErrorCodeEnum.EXCEPTION_ERROR.getErrorCode());
+			response.setMessage(e.getMessage());
+		}
+		return response;
+	}
+
+	@Override
+	public BaseResponseDto<RolesDto> createOrUpdateRoles(CreateOrUpdateRoleRequestDto request) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

@@ -1,0 +1,12 @@
+com\project\api\LibraryApi$1.class
+com\project\model\ErrorResponseObject.class
+com\project\model\MetadataDto.class
+com\project\api\LibraryApiDelegate.class
+com\project\model\Book.class
+com\project\model\ElementsDto.class
+com\rest\api\main\MyProjectRestApi.class
+com\project\model\PageDto.class
+com\project\api\ApiUtil.class
+com\project\api\LibraryApiController$1.class
+com\project\api\LibraryApiController.class
+com\project\api\LibraryApi.class

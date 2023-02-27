@@ -1,0 +1,5 @@
+package com.project.shared.service;
+
+public interface RoleService {
+
+}

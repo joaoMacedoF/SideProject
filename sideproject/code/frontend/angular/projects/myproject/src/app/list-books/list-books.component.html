@@ -1,0 +1,16 @@
+<p>list-books works!</p>
+
+<table>
+  <thead>
+    <tr>
+      <th *ngFor="let col of columns">{{ col }}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let book of books$ | async">
+      <td>{{ book.id }}</td>
+      <td>{{ book.name }}</td>
+      <td>{{ book.bookAuthor }}</td>
+    </tr>
+  </tbody>
+</table>

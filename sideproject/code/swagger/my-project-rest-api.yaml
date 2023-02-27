@@ -1,0 +1,337 @@
+openapi: 3.0.1
+
+info:
+  version: 0.0.1
+  title: Library Service
+  description: The library service
+
+tags:
+  - name: Library
+    description: Library Controller
+  - name: Role
+    description: Role Controller
+
+paths:
+  /library/books:
+    get:
+      tags:
+        - Library
+      summary: getAllBooksInLibrary
+      operationId: getAllBooksInLibraryUsingGET
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseDtoListBookDto"
+        400:
+          $ref: "#/components/responses/ErrorResponse"
+        403:
+          $ref: "#/components/responses/ForbiddenResponse"
+      deprecated: false
+
+  /roles:
+    get:
+      tags:
+        - Role
+      summary: getRoles
+      operationId: getRolesUsingGET
+      parameters:
+        - name: apiRequest
+          in: query
+          schema:
+            $ref: "#/components/schemas/RequestDtoPageRoleDto"
+        - name: pageable
+          in: query
+          schema:
+            $ref: "#/components/schemas/Pageable"
+        - name: unpaged
+          in: query
+          schema:
+            type: boolean
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseDtoPageRoleDto"
+        400:
+          $ref: "#/components/responses/ErrorResponse"
+        403:
+          $ref: "#/components/responses/ForbiddenResponse"
+      deprecated: false
+      #security:
+      #  - Bearer: []
+
+    put:
+      tags:
+        - Role
+      summary: createOrUpdateRole
+      operationId: createOrUpdateRoleUsingPUT
+      requestBody:
+        description: apiRequest
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateOrUpdateRoleApiRequestDto"
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResponseDtoRoleDto"
+        400:
+          $ref: "#/components/responses/ErrorResponse"
+        403:
+          $ref: "#/components/responses/ForbiddenResponse"
+      deprecated: false
+      #security:
+      #  - Bearer: []
+      x-codegen-request-body-name: apiRequest
+
+components:
+  schemas:
+    BookDto:
+      description: This is the book model
+      type: object
+      properties:
+        id:
+          description: The name of book
+          type: integer
+        name:
+          description: The name of book
+          type: string
+        bookAuthor:
+          description: name of author
+          type: string
+
+    RoleDto:
+      description: Role of the user
+      type: object
+      properties:
+        pk:
+          type: integer
+          format: int64
+        roleName:
+          type: string
+        roleDescription:
+          type: string
+
+    PageRoleDto:
+      title: PageRoleDto
+      type: object
+      required:
+        - metadata
+        - data
+      properties:
+        metadata:
+          $ref: "#/components/schemas/MetadataDto"
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/RoleDto"
+
+    ResponseDtoPageRoleDto:
+      title: ResponseDtoPageOperacaoDto
+      allOf:
+        - $ref: "#/components/schemas/ResponseDto"
+        - type: object
+          required:
+            - response
+          properties:
+            response:
+              $ref: "#/components/schemas/PageRoleDto"
+
+    ResponseDtoRoleDto:
+      title: ResponseDtoRoleDto
+      allOf:
+        - $ref: "#/components/schemas/ResponseDto"
+        - type: object
+          required:
+            - response
+          properties:
+            response:
+              $ref: "#/components/schemas/RoleDto"
+
+    RequestDtoPageRoleDto:
+      title: RequestDtoPageRoleDto
+      allOf:
+        - $ref: "#/components/schemas/RequestDto"
+        - type: object
+          properties:
+            roleName:
+              type: string
+            roleDescription:
+              type: string
+
+    CreateOrUpdateRoleApiRequestDto:
+      title: CreateOrUpdateRoleApiRequestDto
+      type: object
+      required:
+        - roleName
+        - roleDescription
+      properties:
+        roleDescription:
+          type: string
+        roleName:
+          type: string
+        pk:
+          type: integer
+          format: int64
+
+    ResponseDtoListBookDto:
+      title: ResponseDtoListBookDto
+      allOf:
+        - $ref: "#/components/schemas/ResponseDto"
+        - type: object
+          required:
+            - response
+          properties:
+            response:
+              type: array
+              items:
+                $ref: "#/components/schemas/BookDto"
+    RequestDto:
+      title: RequestDto
+      type: object
+      discriminator:
+        propertyName: request_type
+      properties:
+        export:
+          type: string
+
+    ResponseDto:
+      title: ResponseDto
+      type: object
+      discriminator:
+        propertyName: response_type
+      required:
+        - message
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+        optionals:
+          type: object
+          additionalProperties:
+            type: string
+
+    Pageable:
+      title: Pageable
+      type: object
+      properties:
+        size:
+          type: integer
+          format: int32
+        page:
+          type: integer
+          format: int32
+        sort:
+          $ref: "#/components/schemas/Sort"
+
+    ElementsDto:
+      type: object
+      required:
+        - size
+        - numberElements
+        - totalElements
+      properties:
+        size:
+          type: integer
+          format: int32
+          description: Número de elementos por página.
+        numberElements:
+          type: integer
+          format: int32
+          description: Número da elementos na página atual.
+        totalElements:
+          type: integer
+          format: int64
+          description: Número total de elementos.
+
+    MetadataDto:
+      type: object
+      required:
+        - page
+        - elements
+        - sort
+      properties:
+        page:
+          $ref: "#/components/schemas/PageDto"
+        elements:
+          $ref: "#/components/schemas/ElementsDto"
+        sort:
+          $ref: "#/components/schemas/Sort"
+
+    PageDto:
+      type: object
+      required:
+        - empty
+        - first
+        - last
+        - page
+        - totalPages
+        - paged
+      properties:
+        empty:
+          type: boolean
+          description: Informa se a página atual está vazia.
+        first:
+          type: boolean
+          description: Informa se a página atual é a primeira.
+        last:
+          type: boolean
+          description: Informa se a página atual é a última.
+        page:
+          type: integer
+          description: Número da página atual.
+        totalPages:
+          type: integer
+          description: Número total de páginas.
+        paged:
+          type: boolean
+          description: Informa se a resposta tem paginação.
+
+    Sort:
+      title: Sort
+      type: array
+      items:
+        type: string
+
+    ErrorResponseObject:
+      type: object
+      required:
+        - error
+        - message
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+
+  responses:
+    ErrorResponse:
+      description: Common error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponseObject"
+
+    UnauthorizedResponse:
+      description: The user have typed the wrong credentials or don't have an account. This error only shows on login.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponseObject"
+
+    ForbiddenResponse:
+      description: The user doesn't have permission to make the operation.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponseObject"

@@ -1,0 +1,5 @@
+package com.project.shared.dto.request;
+
+public class CreateOrUpdateRoleRequestDto {
+
+}
